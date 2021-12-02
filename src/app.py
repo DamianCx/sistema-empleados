@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import render_template, request, redirect
 from flaskext.mysql import MySQL
+from datetime import datetime
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -37,6 +38,15 @@ def store():
  correo = request.form['txtCorreo'] 
  foto = request.files['txtFoto'] 
  
+ 
+ now = datetime.now()
+ print(now)
+ tiempo = now.strftime("%Y%H%M%S")
+ print(tiempo)
+ if foto.filename != '':
+     nuevoNombreFoto = tiempo + '_'+ foto.filename
+     foto.save("uploads/" + nuevoNombreFoto)
+
  sql = "INSERT INTO EMPLEADOS (nombre, correo, foto) values (%s,%s,%s);"
  datos = (nombre, correo, foto.filename)
 
@@ -49,3 +59,5 @@ def store():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/delete/<int:id>')
